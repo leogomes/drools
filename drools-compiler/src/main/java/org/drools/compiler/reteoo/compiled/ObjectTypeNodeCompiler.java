@@ -7,9 +7,12 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.compiled.AssertHandler;
+import org.drools.core.reteoo.compiled.ByPassModifyToBetaNodeHandler;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.reteoo.compiled.DeclarationsHandler;
+import org.drools.core.reteoo.compiled.GetAssociationsHandler;
 import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
+import org.drools.core.reteoo.compiled.ModifyHandler;
 import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
@@ -69,6 +72,17 @@ public class ObjectTypeNodeCompiler {
         // create assert method
         AssertHandler assertHandler = new AssertHandler(builder, className, hashedAlphaDeclarations.size() > 0);
         parser.accept(assertHandler);
+        
+        // create modify method
+        ModifyHandler modifyHandler = new ModifyHandler(builder, className, hashedAlphaDeclarations.size() > 0);
+        parser.accept(modifyHandler);
+        
+        ByPassModifyToBetaNodeHandler bypassHandler  = new ByPassModifyToBetaNodeHandler(builder);
+        parser.accept(bypassHandler);
+        
+        GetAssociationsHandler getAssociationsHandler = new GetAssociationsHandler(builder);
+        parser.accept(getAssociationsHandler);
+
 
         // end of class
         builder.append("}").append(NEWLINE);
@@ -133,7 +147,7 @@ public class ObjectTypeNodeCompiler {
      * @return binary name of generated class
      */
     private String getBinaryName() {
-        return BINARY_PACKAGE_NAME + "." + generatedClassSimpleName + ".class";
+        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".class";
     }
 
     private String getPackageName() {
@@ -175,7 +189,7 @@ public class ObjectTypeNodeCompiler {
 
         CompiledNetwork network;
         try {
-            network = (CompiledNetwork) Class.forName(generatedSourceName, true, pkgBuilder.getRootClassLoader()).newInstance();
+            network = (CompiledNetwork) Class.forName(generatedSourceName, true, pkgReg.getPackageClassLoader()).newInstance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("This is a bug. Please contact the development team", e);
         } catch (IllegalAccessException e) {

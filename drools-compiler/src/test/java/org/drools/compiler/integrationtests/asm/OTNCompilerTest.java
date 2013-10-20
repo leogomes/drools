@@ -74,6 +74,12 @@ public class OTNCompilerTest extends CommonTestMethodBase {
 		drl += "   Person(name == 'Maria')\n";
 		drl += "then\n";
 		drl += "end\n";
+		drl += "rule test5\n";
+		drl += "when\n";
+		drl += "   Person(age == 32)\n";
+		drl += "then\n";
+		drl += "end\n";
+		
 
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder();
