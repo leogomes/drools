@@ -70,6 +70,8 @@ public class NodeTypeEnums {
 
     // mdp not sure what number this should be yet
     public static final short OperatorNode            = 19;
+    
+    public static final short CompiledNetworkNode     = 17; // lfg: not sure what number if should be (%2 == 0, since it's an object sink?)
 
     public static boolean isObjectSource(NetworkNode node) {
         return node.getType() < NodeTypeEnums.ObjectSource;

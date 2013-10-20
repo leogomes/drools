@@ -98,6 +98,14 @@ public abstract class CompiledNetwork implements ObjectSink {
     }
 
     /**
+     * The type of this node.
+     */
+	public short getType() {
+		return NodeTypeEnums.CompiledNetworkNode;
+	}
+
+
+    /**
      * Generated subclasses need to implement this method to set member variables based on the specified
      * NetworkNode.
      *
